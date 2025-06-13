@@ -1,0 +1,24 @@
+
+.env
+.env.local
+.env.production
+
+# Python virtual environment
+venv/
+__pycache__/
+*.pyc
+
+# Streamlit cache
+.streamlit/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.log
