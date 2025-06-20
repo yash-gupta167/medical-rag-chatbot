@@ -10,7 +10,7 @@ Build a patient-safety-aware chatbot that combines local knowledge embeddings wi
 
 ---
 
-## Core Objectives (Assignment.pdf)
+## Core Objectives
 
 ### 1. Triage / Diagnosis
 ✅ Infer the most likely condition from free-text symptoms
