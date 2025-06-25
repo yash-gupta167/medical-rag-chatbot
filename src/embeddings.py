@@ -13,7 +13,7 @@ class MedicalEmbeddings:
         self.sentences = []
         
     def initialize_qdrant(self, url=None):
-        """Initialize Qdrant client (in-memory for demo)"""
+       
         if url is None:
             self.client = QdrantClient(":memory:")
         else:
@@ -21,7 +21,7 @@ class MedicalEmbeddings:
 
         
     def load_medical_sentences(self, file_path='data/Assignment-Data-Base.xlsx'):
-        """Load the 60 pre-approved sentences from Excel file (unaltered as per PDF)"""
+        
         df = pd.read_excel(file_path, sheet_name='Database')
         self.sentences = []
         
@@ -35,7 +35,7 @@ class MedicalEmbeddings:
         return self.sentences
     
     def _categorize_sentence(self, content):
-        """Categorize sentences into diabetes, cardiac, or renal"""
+        
         content_lower = content.lower()
         
         diabetes_keywords = ['diabetes', 'glucose', 'insulin', 'hypoglycaemia', 'hyperglycaemic', 'ketoacidosis', 'hba1c', 'metformin']
@@ -52,7 +52,7 @@ class MedicalEmbeddings:
             return 'general'
     
     def create_collection(self):
-        """Create collection in Qdrant"""
+        
         try:
             self.client.delete_collection(self.collection_name)
         except:
@@ -67,7 +67,7 @@ class MedicalEmbeddings:
         )
     
     def create_embeddings(self):
-        """Create embeddings for all 60 medical sentences"""
+        
         if not self.sentences:
             raise ValueError("No sentences loaded. Call load_medical_sentences first.")
         
@@ -96,7 +96,7 @@ class MedicalEmbeddings:
         return len(points)
     
     def search_similar(self, query, top_k=3):
-        """Search for similar medical sentences"""
+        
         query_vector = self.model.encode(query).tolist()
         
         search_result = self.client.search(

@@ -38,19 +38,19 @@ def main():
     st.title("🏥 RAG-Powered First-Aid Chatbot")
     st.subheader("Diabetes, Cardiac & Renal Emergencies")
     
-    # Display mission statement from Assignment.pdf
+    
     st.info("**Mission:** Build a patient-safety-aware chatbot that combines local knowledge embeddings with real-time web evidence to deliver actionable first-aid guidance always prefaced with a clinical disclaimer.")
     
 
     
-    # Sidebar
+    
     st.sidebar.title("Navigation")
     mode = st.sidebar.selectbox(
         "Choose Mode:",
         ["Interactive Chat", "Test All 10 Queries", "Performance Analysis"]
     )
     
-    # Initialize chatbot
+    
     chatbot = initialize_chatbot()
     if not chatbot:
         st.error("Please check your API keys in the .env file")
@@ -93,7 +93,7 @@ def interactive_chat(chatbot):
         if st.button(" High Potassium", help="Query 8"):
             st.session_state.user_input = TEST_QUERIES[7]
     
-    # User input
+    
     user_input = st.text_area(
         "🩺 Describe your medical emergency:",
         value=st.session_state.get('user_input', ''),
@@ -112,11 +112,11 @@ def interactive_chat(chatbot):
                     end_time = time.time()
                     result['response_time'] = end_time - start_time
                     
-                    # Display main response
+                    
                     st.markdown("### Medical Response")
                     st.markdown(result['response'])
                     
-                    # Display metrics
+                    
                     col1, col2, col3, col4 = st.columns(4)
                     
                     with col1:
@@ -131,7 +131,7 @@ def interactive_chat(chatbot):
                     with col4:
                         st.metric(" Sources", len(result['sources']))
                     
-                    # Show detailed sources
+                    
                     with st.expander(" View Source Details"):
                         for i, source in enumerate(result['sources'], 1):
                             if source['search_type'] == 'local_semantic':
@@ -175,7 +175,7 @@ def test_all_queries(chatbot):
                     result['query_number'] = i + 1
                     results.append(result)
                     
-                    # Quick evaluation
+                    
                     has_condition = '**condition:**' in result['response'].lower()
                     has_actions = '**immediate actions:**' in result['response'].lower()
                     has_sources = '[' in result['response'] and ']' in result['response']
@@ -198,8 +198,7 @@ def test_all_queries(chatbot):
             
             progress_bar.progress((i + 1) / len(TEST_QUERIES))
         
-        # Performance Summary
-        # Save performance report - WORKING VERSION
+        
         st.markdown("### 📊 Test Results Summary")
         metrics = calculate_accuracy_metrics(results)
 
@@ -221,28 +220,28 @@ def test_all_queries(chatbot):
             avg_time = sum(r.get('response_time', 0) for r in results) / len(results)
             st.metric("Avg Time", f"{avg_time:.2f}s")
 
-        # Target from Assignment.pdf
+        
         if metrics['success_rate'] >= 0.8:
             st.success("🎯 **TARGET ACHIEVED:** Bot passes at least 8/10 queries with correct triage + relevant citations!")
         else:
             st.warning("🎯 Target: Pass at least 8/10 queries (Assignment.pdf requirement)")
 
-        # Download buttons that ACTUALLY WORK
+        
         st.markdown("### 💾 Download Reports")
 
         col1, col2 = st.columns(2)
 
-        # JSON Download
+        
         with col1:
             try:
-                # Generate JSON report
+               
                 report = save_performance_report(results)
                 
-                # Convert to JSON string
+               
                 import json
                 report_json = json.dumps(report, indent=2, default=str)
                 
-                # Create working download button
+                
                 st.download_button(
                     label="📥 Download JSON Report",
                     data=report_json,
@@ -254,21 +253,21 @@ def test_all_queries(chatbot):
             except Exception as e:
                 st.error(f"JSON Error: {str(e)}")
 
-        # PDF Download  
+         
         with col2:
             try:
-                # Generate PDF report
+                
                 from src.utils import generate_performance_pdf
                 
-                # Create PDF file
+                
                 pdf_filename = f"performance_report_{time.strftime('%Y%m%d_%H%M%S')}.pdf"
                 generate_performance_pdf(results, pdf_filename)
                 
-                # Read PDF file in binary mode
+                
                 with open(pdf_filename, "rb") as pdf_file:
                     pdf_data = pdf_file.read()
                 
-                # Create working download button
+                
                 st.download_button(
                     label="📄 Download PDF Report",
                     data=pdf_data,
@@ -280,7 +279,7 @@ def test_all_queries(chatbot):
             except Exception as e:
                 st.error(f"PDF Error: {str(e)}")
 
-        # Show preview
+        
         with st.expander("📊 Performance Report Preview"):
             if 'report' in locals():
                 st.json({

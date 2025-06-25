@@ -11,21 +11,20 @@ class FirstAidChatbot:
     """
     
     def __init__(self):
-        # Initialize Gemini 2.0 Flash (free API)
         genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
         if not os.getenv('GOOGLE_API_KEY'):
             raise ValueError("GOOGLE_API_KEY not found in environment variables")
         
         self.model = genai.GenerativeModel('gemini-2.0-flash-exp')
         
-        # Initialize components
+       
         self.retrieval = HybridRetrieval()
         self.triage = MedicalTriage()
         
-        # Clinical disclaimer as required
+        
         self.disclaimer = "⚠️ *This information is for educational purposes only and is not a substitute for professional medical advice.*"
         
-        # System prompt for structured responses
+        
         self.system_prompt = """You are a medical first-aid assistant specializing in diabetes, cardiac, and renal emergencies.
 
 Your role:
@@ -36,16 +35,16 @@ Your role:
 5. Keep responses under 250 words
 6. Always start with the required medical disclaimer
 
-Format your response EXACTLY as follows:
-⚠️ *This information is for educational purposes only and is not a substitute for professional medical advice.*
+Format your response exactly as follows:
+⚠️ This information is for educational purposes only and is not a substitute for professional medical advice.
 
-**Condition:** [Most likely condition based on symptoms]
-**Immediate Actions:**
+Condition: [Most likely condition based on symptoms]
+Immediate Actions:
 - [First aid step 1]
 - [First aid step 2]
 - [First aid step 3]
-**Medications:** [If applicable, mention specific medicines]
-**Sources:** [Citation numbers in square brackets]
+Medications: [If applicable, mention specific medicines]
+Sources: [Citation numbers in square brackets]
 
 Be precise, actionable, and safety-focused. For life-threatening situations, always prioritize calling emergency services."""
 
@@ -70,28 +69,21 @@ Be precise, actionable, and safety-focused. For life-threatening situations, alw
         return "\n\n".join(context_parts)
     
     def generate_response(self, query: str) -> Dict:
-        """
-        Generate response with:
-        - Condition identification
-        - First-aid steps
-        - Key medicine(s)
-        - Source citations
-        - ≤ 250 words
-        """
         
-        # Step 1: Perform hybrid retrieval
+        
+        
         search_results, condition_type = self.retrieval.hybrid_search(query)
         
-        # Step 2: Assess urgency
+        
         urgency = self.triage.assess_urgency(query)
         
-        # Step 3: Prepare context
+        
         context = self.prepare_context(search_results)
         
-        # Step 4: Generate response using Gemini 2.0 Flash
+        
         response_text = self.call_gemini(query, context)
         
-        # Step 5: Return structured response
+       
         return {
             'query': query,
             'condition_type': condition_type,
@@ -102,7 +94,7 @@ Be precise, actionable, and safety-focused. For life-threatening situations, alw
         }
     
     def call_gemini(self, query: str, context: str) -> str:
-        """Call Gemini 2.0 Flash API to generate structured response"""
+       
         
         user_prompt = f"""
 {self.system_prompt}
@@ -119,7 +111,7 @@ Please analyze the symptoms, identify the most likely condition, and provide imm
             response = self.model.generate_content(user_prompt)
             generated_text = response.text.strip()
             
-            # Ensure disclaimer is present
+           
             if not generated_text.startswith("⚠️"):
                 generated_text = f"{self.disclaimer}\n\n{generated_text}"
             
@@ -128,7 +120,7 @@ Please analyze the symptoms, identify the most likely condition, and provide imm
         except Exception as e:
             return f"{self.disclaimer}\n\nI apologize, but I'm unable to process your query at the moment. Please consult a healthcare professional immediately for medical emergencies. Error: {str(e)}"
 
-# Sample Test Queries from Assignment.pdf
+
 TEST_QUERIES = [
     "I'm sweating, shaky, and my glucometer reads 55 mg/dL—what should I do right now?",
     "My diabetic father just became unconscious; we think his sugar crashed. What immediate first-aid should we give?",
