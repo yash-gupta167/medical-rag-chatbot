@@ -13,10 +13,7 @@ class HybridRetrieval:
         
     def initialize(self, file_path='data/Assignment-Data-Base.xlsx'):
         
-       
         self.embeddings.initialize_qdrant()
-        
-        
         self.embeddings.load_medical_sentences(file_path)
         self.embeddings.create_embeddings()
         

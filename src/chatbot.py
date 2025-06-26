@@ -15,7 +15,7 @@ class FirstAidChatbot:
         if not os.getenv('GOOGLE_API_KEY'):
             raise ValueError("GOOGLE_API_KEY not found in environment variables")
         
-        self.model = genai.GenerativeModel('gemini-2.0-flash-exp')
+        self.model = genai.GenerativeModel('gemini-2.0-flash')
         
        
         self.retrieval = HybridRetrieval()
@@ -35,7 +35,7 @@ Your role:
 5. Keep responses under 250 words
 6. Always start with the required medical disclaimer
 
-Format your response exactly as follows:
+*Format your response exactly as follows:
 ⚠️ This information is for educational purposes only and is not a substitute for professional medical advice.
 
 Condition: [Most likely condition based on symptoms]
@@ -49,11 +49,11 @@ Sources: [Citation numbers in square brackets]
 Be precise, actionable, and safety-focused. For life-threatening situations, always prioritize calling emergency services."""
 
     def initialize(self, file_path='data/Assignment-Data-Base.xlsx'):
-        """Initialize the chatbot with the medical knowledge base"""
+        
         self.retrieval.initialize(file_path)
     
     def prepare_context(self, search_results: List[Dict]) -> str:
-        """Prepare context from hybrid search results"""
+        
         context_parts = []
         
         for i, result in enumerate(search_results, 1):

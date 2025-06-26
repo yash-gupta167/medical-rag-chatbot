@@ -5,7 +5,7 @@ import logging
 from fpdf import FPDF
 
 
-# Configure logging
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -24,21 +24,21 @@ class PerformancePDF(FPDF):
         self.cell(0, 10, f'Page {self.page_no()}', 0, 0, 'C')
 
 def generate_performance_pdf(results, filename='performance_report.pdf'):
-    """Generate PDF performance report as required by Assignment.pdf - UNICODE SAFE VERSION"""
+    
     
     from fpdf import FPDF
     import time
     
-    # Calculate metrics
+    
     metrics = calculate_accuracy_metrics(results)
     response_times = [r.get('response_time', 0) for r in results if 'response_time' in r]
     avg_latency = sum(response_times) / len(response_times) if response_times else 0
     total_tokens = sum(len(r.get('response', '').split()) for r in results)
     avg_tokens_per_response = total_tokens / len(results) if results else 0
     
-    # Helper function to clean text for PDF
+    
     def clean_text_for_pdf(text):
-        """Replace Unicode characters with ASCII equivalents"""
+        
         replacements = {
             '≤': '<=',
             '≥': '>=',
@@ -58,11 +58,11 @@ def generate_performance_pdf(results, filename='performance_report.pdf'):
         for unicode_char, ascii_replacement in replacements.items():
             text = text.replace(unicode_char, ascii_replacement)
         
-        # Remove any remaining non-ASCII characters
+        
         text = ''.join(char if ord(char) < 128 else '?' for char in text)
         return text
     
-    # Create PDF with Unicode support
+    
     class PerformancePDF(FPDF):
         def header(self):
             self.set_font('Arial', 'B', 16)
@@ -79,7 +79,7 @@ def generate_performance_pdf(results, filename='performance_report.pdf'):
     pdf = PerformancePDF()
     pdf.add_page()
     
-    # Executive Summary
+    
     pdf.set_font('Arial', 'B', 14)
     pdf.cell(0, 10, 'Executive Summary', 0, 1, 'L')
     pdf.set_font('Arial', '', 11)
@@ -88,13 +88,12 @@ def generate_performance_pdf(results, filename='performance_report.pdf'):
     pdf.multi_cell(0, 6, clean_text_for_pdf(summary_text))
     pdf.ln(5)
     
-    # Performance Metrics
-    # Performance Metrics
+   
     pdf.set_font('Arial', 'B', 14)
     pdf.cell(0, 10, '1. Performance Metrics', 0, 1, 'L')
     pdf.set_font('Arial', '', 11)
 
-    # Average Latency - UPDATED TARGET
+    
     pdf.set_font('Arial', 'B', 11)
     pdf.cell(0, 8, f'Average Latency: {round(avg_latency, 2)} seconds', 0, 1, 'L')
     pdf.set_font('Arial', '', 10)
@@ -103,7 +102,7 @@ def generate_performance_pdf(results, filename='performance_report.pdf'):
     pdf.multi_cell(0, 5, clean_text_for_pdf(latency_text))
     pdf.ln(3)
 
-    # Token Usage
+
     pdf.set_font('Arial', 'B', 11)
     pdf.cell(0, 8, f'Token Usage: {round(avg_tokens_per_response, 0)} tokens per response', 0, 1, 'L')
     pdf.set_font('Arial', '', 10)
@@ -112,8 +111,7 @@ def generate_performance_pdf(results, filename='performance_report.pdf'):
     pdf.multi_cell(0, 5, clean_text_for_pdf(token_text))
     pdf.ln(5)
 
-    
-    # Accuracy Summary
+
     pdf.set_font('Arial', 'B', 14)
     pdf.cell(0, 10, '2. Accuracy Summary', 0, 1, 'L')
     pdf.set_font('Arial', '', 11)
@@ -135,7 +133,7 @@ def generate_performance_pdf(results, filename='performance_report.pdf'):
     
     pdf.ln(5)
     
-    # Assignment Requirements Compliance
+
     pdf.set_font('Arial', 'B', 14)
     pdf.cell(0, 10, '3. Assignment Requirements Compliance', 0, 1, 'L')
     pdf.set_font('Arial', '', 11)
@@ -158,7 +156,7 @@ def generate_performance_pdf(results, filename='performance_report.pdf'):
         pdf.multi_cell(0, 5, clean_text_for_pdf(description))
         pdf.ln(1)
     
-    # Known Limitations
+
     pdf.add_page()
     pdf.set_font('Arial', 'B', 14)
     pdf.cell(0, 10, '4. Known Limitations', 0, 1, 'L')
@@ -178,7 +176,6 @@ def generate_performance_pdf(results, filename='performance_report.pdf'):
         pdf.multi_cell(0, 6, clean_text_for_pdf(f'{i}. {limitation}'))
         pdf.ln(1)
     
-    # Test Results Summary
     pdf.add_page()
     pdf.set_font('Arial', 'B', 14)
     pdf.cell(0, 10, '5. Test Results Summary', 0, 1, 'L')
@@ -188,7 +185,6 @@ def generate_performance_pdf(results, filename='performance_report.pdf'):
     pdf.multi_cell(0, 6, clean_text_for_pdf(summary_text))
     pdf.ln(5)
     
-    # Individual query results (summary)
     for i, result in enumerate(results[:10], 1):
         condition = result.get('condition_type', 'General')
         response_time = result.get('response_time', 0)
@@ -203,7 +199,6 @@ def generate_performance_pdf(results, filename='performance_report.pdf'):
         pdf.multi_cell(0, 5, clean_text_for_pdf(status_text))
         pdf.ln(1)
     
-    # Conclusion
     pdf.ln(5)
     pdf.set_font('Arial', 'B', 14)
     pdf.cell(0, 10, '6. Conclusion', 0, 1, 'L')
@@ -221,8 +216,7 @@ def generate_performance_pdf(results, filename='performance_report.pdf'):
 
     pdf.multi_cell(0, 6, clean_text_for_pdf(conclusion_text))
 
-    # ADD THIS SECTION HERE (after conclusion_text, before PDF save)
-    pdf.ln(8)  # Add some space
+    pdf.ln(8)  
     pdf.set_font('Arial', 'B', 12)
     pdf.cell(0, 8, 'Performance Target Rationale:', 0, 1, 'L')
     pdf.set_font('Arial', '', 11)
@@ -231,12 +225,10 @@ def generate_performance_pdf(results, filename='performance_report.pdf'):
 
     pdf.multi_cell(0, 6, clean_text_for_pdf(performance_justification))
 
-    # Save PDF
     pdf.output(filename)
     return filename
 
 def calculate_accuracy_metrics(responses: List[Dict]) -> Dict:
-    """Calculate accuracy metrics for test queries as required by Assignment.pdf"""
     total_queries = len(responses)
     if total_queries == 0:
         return {
@@ -252,7 +244,6 @@ def calculate_accuracy_metrics(responses: List[Dict]) -> Dict:
     
     successful_responses = sum(1 for r in responses if 'error' not in r.get('response', '').lower())
     
-    # Check for required components (Assignment.pdf requirements)
     has_condition = sum(1 for r in responses if '**condition:**' in r.get('response', '').lower())
     has_actions = sum(1 for r in responses if '**immediate actions:**' in r.get('response', '').lower())
     has_medications = sum(1 for r in responses if '**medications:**' in r.get('response', '').lower())
@@ -271,14 +262,11 @@ def calculate_accuracy_metrics(responses: List[Dict]) -> Dict:
     }
 
 def save_performance_report(results: List[Dict], filename: str = 'performance_report.json'):
-    """Save performance report as required by Assignment.pdf"""
     metrics = calculate_accuracy_metrics(results)
     
-    # Calculate average latency
     response_times = [r.get('response_time', 0) for r in results if 'response_time' in r]
     avg_latency = sum(response_times) / len(response_times) if response_times else 0
     
-    # Estimate token usage (approximate)
     total_tokens = sum(len(r.get('response', '').split()) for r in results)
     avg_tokens_per_response = total_tokens / len(results) if results else 0
     
@@ -327,7 +315,6 @@ def save_performance_report(results: List[Dict], filename: str = 'performance_re
         'detailed_test_results': results
     }
     
-    # Save to file
     try:
         with open(filename, 'w', encoding='utf-8') as f:
             json.dump(report, f, indent=2, default=str, ensure_ascii=False)
