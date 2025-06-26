@@ -1,11 +1,9 @@
 import os
 import warnings
 
-# Fix PyTorch-Streamlit compatibility issue
 os.environ['STREAMLIT_SERVER_FILE_WATCHER_TYPE'] = 'none'
 warnings.filterwarnings('ignore', category=UserWarning, module='torch')
 
-# Now your existing imports...
 import streamlit as st
 import time
 from dotenv import load_dotenv
@@ -16,7 +14,7 @@ from src.utils import save_performance_report, calculate_accuracy_metrics
 
 load_dotenv()
 
-# Page configuration
+
 st.set_page_config(
     page_title="RAG-Powered First-Aid Chatbot",
     page_icon="🏥",
@@ -25,7 +23,7 @@ st.set_page_config(
 
 @st.cache_resource
 def initialize_chatbot():
-    """Initialize and cache the chatbot"""
+    
     try:
         chatbot = FirstAidChatbot()
         chatbot.initialize('data/Assignment-Data-Base.xlsx')
@@ -46,7 +44,7 @@ def main():
     
     st.sidebar.title("Navigation")
     mode = st.sidebar.selectbox(
-        "Choose Mode:",
+        
         ["Interactive Chat", "Test All 10 Queries", "Performance Analysis"]
     )
     
@@ -68,13 +66,13 @@ def main():
         performance_analysis()
 
 def interactive_chat(chatbot):
-    """Interactive chat interface for demo video"""
+    
     
     st.markdown("###  Medical Emergency Chat")
     st.markdown("**Enter your symptoms for immediate first-aid guidance**")
     
-    # Sample queries from Assignment.pdf
-    st.markdown("**Sample Test Queries (from the Provided PDF:-Assignment.pdf):**")
+   
+    st.markdown("**Sample Test Queries (from the Provided PDF):**")
     col1, col2 = st.columns(2)
     
     with col1:
@@ -153,7 +151,7 @@ def interactive_chat(chatbot):
             st.warning("Please enter your symptoms or medical question.")
 
 def test_all_queries(chatbot):
-    """Test all 10 sample queries from Assignment.pdf"""
+    
     
     st.markdown("### Test All 10 Sample Queries")
     st.markdown("Testing the chatbot against all sample queries from Assignment.pdf to verify it passes at least 8/10 with correct triage + relevant citations.")
@@ -224,7 +222,7 @@ def test_all_queries(chatbot):
         if metrics['success_rate'] >= 0.8:
             st.success("🎯 **TARGET ACHIEVED:** Bot passes at least 8/10 queries with correct triage + relevant citations!")
         else:
-            st.warning("🎯 Target: Pass at least 8/10 queries (Assignment.pdf requirement)")
+            st.warning("🎯 Target: Pass at least 8/10 queries from the requirement")
 
         
         st.markdown("### 💾 Download Reports")
@@ -293,7 +291,7 @@ def test_all_queries(chatbot):
 
 
 def performance_analysis():
-    """Performance analysis and system information"""
+    
     
     st.markdown("###  Performance Analysis")
     
@@ -318,7 +316,7 @@ def performance_analysis():
     
     st.markdown("### 🎯 Assignment.pdf Compliance")
     
-    # Compliance checklist
+    
     compliance_items = [
         ("✅ Patient-safety-aware with clinical disclaimers", True),
         ("✅ Local knowledge embeddings (60 sentences)", True),
